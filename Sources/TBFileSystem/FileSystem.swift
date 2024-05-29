@@ -30,6 +30,19 @@ public struct FileSystem {
     public static func contentsOf(folderURL: URL) throws -> [URL] {
         try manager.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: nil)
     }
+    
+    @available(macOS 13.0, *)
+    /// Used for determining if a file of the given `filename` exists in the `Documents` folder.
+    /// - Parameter filename: The name of the file to be checked.
+    /// - Returns: `true` if the file exists in `Documents`; `false` otherwise.
+    public static func fileExistsInDocuments(_ filename: String) -> Bool {
+        guard let documentsURL = documentsURL else {
+            return false
+        }
+        
+        let fileURL = documentsURL.appending(path: filename, directoryHint: .notDirectory)
+        return manager.fileExists(atPath: fileURL.path())
+    }
 
     /// Logs to the console the path to an app's sandbox `Documents` folder.
     public static func logDocumentsURL() {
